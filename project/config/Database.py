@@ -1,9 +1,5 @@
-import mysql.connector
+import sqlite3
 
-connection = mysql.connector(
-    host = "localhost",
-    user = "root",
-    password = ""
-)
+connection = sqlite3.connector('database.db')
 
 cursor = connection.cursor()

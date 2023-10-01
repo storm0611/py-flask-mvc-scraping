@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/svg" href="{{ url_for('static', filename='img/flask.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+  <title>Fibrafil</title>
+</head>
+
+<body>
+  <div class="container mt-5">
+    <form method="POST">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="location">Location:</label>
+        <select class="form-control" id="location">
+          <option value="United States">United States</option>
+          <option value="Europe">Europe</option>
+          <option value="Argentina">Argentina</option>
+          <option value="France">France</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <label for="industry">Industry:</label>
+        <select class="form-control" id="industry">
+          <option value="Pharmaceutical manufacturing">Pharmaceutical manufacturing</option>
+          <option value="Medical clinics">Medical clinics</option>
+          <option value="Law firms">Law firms</option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <label for="job-title">Job Title Keyword:</label>
+        <input type="text" class="form-control" id="job-title"
+          placeholder="Sales, Purchasing, Operations, Quality Control">
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-12 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary" id="search">Search</button>
+      </div>
+    </div>
+    </form>
+    <div class="row">
+      <div class="col-sm-12">
+        <h1 class="text-center">Result</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 d-flex justify-content-end">
+        <button class="btn btn-outline-primary" id="export">Export</button>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col-sm-12 table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Website</th>
+              <th>Company Linkedin Url</th>
+              <th>Company Phone</th>
+              <th>Company Address</th>
+              <th>Company State</th>
+              <th>Company City</th>
+              <th>Company Postal Code</th>
+              <th>Company Country</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Title</th>
+              <th>Email</th>
+              <th>Person Linkedin Url</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in data %}
+            <tr>
+              <td>{{item["company"]}}</td>
+              <td>{{item["website"]}}</td>
+              <td>{{item["linkedin_comp"]}}</td>
+              <td>{{item["phone"]}}</td>
+              <td>{{item["address"]}}</td>
+              <td>{{item["state"]}}</td>
+              <td>{{item["city"]}}</td>
+              <td>{{item["code"]}}</td>
+              <td>{{item["country"]}}</td>
+              <td>{{item["fname"]}}</td>
+              <td>{{item["lname"]}}</td>
+              <td>{{item["title"]}}</td>
+              <td>{{item["email"]}}</td>
+              <td>{{item["linkedin_pers"]}}</td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <!-- <ul class="pagination justify-content-end">
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#">Next</a>
+        </li>
+      </ul> -->
+    </div>
+  </div>
+</body>
+<script>
+  $(document).ready(function () {
+    $("#export").click(function () {
+        $.ajax({
+          url: "/export",
+          method: "POST",
+          headers: {
+            'X-CSRFToken': getCookie("csrftoken")
+          },
+          data: {},
+          contentType: "application/json",
+          success: function (result, status, xhr) {
+            try {
+              console.log("Result: ", result);
+            } catch (err) {
+              console.log("Error: ", err);
+            }
+          }
+        });
+    });
+    // $("#search").click(function () {
+    //   $.ajax({
+    //       url: "/",
+    //       method: "POST",
+    //       headers: {
+    //         'X-CSRFToken': getCookie("csrftoken")
+    //       },
+    //       data: {
+    //         loc: $("#location").val(),
+    //         ind: $("#industry").val(),
+    //         job: $("#job-title").val()
+    //       },
+    //       contentType: "application/json",
+    //       success: function (result, status, xhr) {
+    //         try {
+    //           suggestedPassword = result.suggested_password;
+    //           $('#suggested-password-value').val(result.suggested_password);
+    //         } catch (err) {
+    //           console.log(err);
+    //         }
+    //       }
+    //     });
+    // })
+  });
+</script>
+
+</html>
