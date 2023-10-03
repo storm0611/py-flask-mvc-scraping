@@ -17,30 +17,23 @@
     <div class="row">
       <div class="col-sm-4">
         <label for="location">Location:</label>
-        <select class="form-control" id="location">
-          <option value="United States">United States</option>
-          <option value="Europe">Europe</option>
-          <option value="Argentina">Argentina</option>
-          <option value="France">France</option>
-        </select>
+        <input type="text" class="form-control" id="location" name = "location"
+          placeholder="Please Enter Name of Country, Ex. United States" required>
       </div>
       <div class="col-sm-4">
         <label for="industry">Industry:</label>
-        <select class="form-control" id="industry">
-          <option value="Pharmaceutical manufacturing">Pharmaceutical manufacturing</option>
-          <option value="Medical clinics">Medical clinics</option>
-          <option value="Law firms">Law firms</option>
-        </select>
+        <input type="text" class="form-control" id="industry" name = "industry"
+          placeholder="Please Enter Name of Industry, Ex. Pharmaceutical manufacturing" required>
       </div>
       <div class="col-sm-4">
         <label for="job-title">Job Title Keyword:</label>
-        <input type="text" class="form-control" id="job-title"
-          placeholder="Sales, Purchasing, Operations, Quality Control">
+        <input type="text" class="form-control" id="job-title" name = "job-title"
+          placeholder="Sales, Purchasing, Operations, Quality Control" required>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-12 d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary" id="search">Search</button>
+        <button type="submit" class="btn btn-primary" id="search" disabled>Search</button>
       </div>
     </div>
     </form>
@@ -80,7 +73,7 @@
             <tr>
               <td>{{item["company"]}}</td>
               <td>{{item["website"]}}</td>
-              <td>{{item["linkedin_comp"]}}</td>
+              <td><a href="{{item['linkedin_comp']}}">{{item["linkedin_comp"]}}<a></td>
               <td>{{item["phone"]}}</td>
               <td>{{item["address"]}}</td>
               <td>{{item["state"]}}</td>
@@ -91,7 +84,7 @@
               <td>{{item["lname"]}}</td>
               <td>{{item["title"]}}</td>
               <td>{{item["email"]}}</td>
-              <td>{{item["linkedin_pers"]}}</td>
+              <td><a href="{{item['linkedin_pers']}}">{{item["linkedin_pers"]}}</td>
             </tr>
             {%endfor%}
           </tbody>
@@ -118,9 +111,6 @@
         $.ajax({
           url: "/export",
           method: "POST",
-          headers: {
-            'X-CSRFToken': getCookie("csrftoken")
-          },
           data: {},
           contentType: "application/json",
           success: function (result, status, xhr) {

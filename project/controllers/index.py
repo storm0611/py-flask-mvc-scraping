@@ -8,12 +8,14 @@ from flask import (
 )
 import openpyxl
 from datetime import datetime
-from pyppeteer import launch
+import asyncio
+from ..utiles.scrape import scraper
+import os
 
 data = []
 
 #route export
-@app.route('/export', methods = ['GET'])
+@app.route('/export', methods = ['POST'])
 def export():
     global data
     # Create a new workbook and select the active worksheet
@@ -56,18 +58,47 @@ def export():
 
     # Save the workbook
     try:
-        workbook.save(str(datetime.now())+'.xlsx')
+        # Set the filename for the workbook
+        filename = str(datetime.now().timestamp())+'.xlsx'
+        # Set the directory to save the file in
+        save_dir = os.path.join(app.root_path, 'csv')
+        # Create the full path to the file
+        filepath = os.path.join(save_dir, filename)
+        # Save the workbook to the file
+        workbook.save(filepath)
         return jsonify({"status": "success"})
     except Exception as err:
-        return jsonify({"status": err})
+        return jsonify({"status": str(err)})
 
 #route index
 @app.route('/', methods = ['GET', 'POST'])
-def index():
+async def index():
     data = []
     if request.method == "POST":
-        
-        data.append({
+        loc = request.POST.get("location", None)
+        ind = request.POST.get("industry", None)
+        job = request.POST.get("job-title", None)
+        if loc and ind and job:
+            scraped = await asyncio.run(scraper(loc, ind, job))
+            for item in scraped:
+                data.append({
+                        "company": item["company"],
+                        "website": item["website"],
+                        "linkedin_comp": item["linkedin_comp"],
+                        "phone":  item["phone"],
+                        "address": item["address"],
+                        "state": item["state"],
+                        "city": item["city"],
+                        "code": item["code"],
+                        "country": item["country"],
+                        "fname": item["fname"],
+                        "lname": item["lname"],
+                        "title": item["title"],
+                        "email": item["email"],
+                        "linkedin_pers": item["linkedin_pers"],  
+                })
+    
+    data.append({
         "company": "3D CAM International",
         "website": "3d-cam.com",
         "linkedin_comp": "http://www.linkedin.com/company/3d-cam-international-corporation",
