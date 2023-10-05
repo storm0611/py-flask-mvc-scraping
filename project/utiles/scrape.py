@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 
 
-async def scraper(location, industry, job_title):
+def scraper(location, industry, job_title):
     options = webdriver.ChromeOptions()
     options.headless = False
     driver = uc.Chrome(use_subprocess=False, options=options)
@@ -25,7 +25,8 @@ async def scraper(location, industry, job_title):
     result_elem = WebDriverWait(driver, 10)\
         .until(EC.presence_of_element_located((By.CSS_SELECTOR, "div[aria-label^='Results']")))
     start_time = datetime.now().timestamp()
-    while datetime.now().timestamp() - start_time < 100:
+    # while datetime.now().timestamp() - start_time < 1000:
+    while True:
         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", result_elem)
         try:
             WebDriverWait(driver, 0.1)\
@@ -36,5 +37,8 @@ async def scraper(location, industry, job_title):
     link_elems = WebDriverWait(driver, 10)\
                 .until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'div[aria-label^="Results"] > div > div > a')))
     print(len(link_elems))
+    driver.close()
     driver.quit()
-    return
+
+if __name__ == "__main__":
+    scraper("United States", "Information", "Sales")
