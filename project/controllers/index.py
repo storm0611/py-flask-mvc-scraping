@@ -9,7 +9,6 @@ from flask import (
 import openpyxl
 from datetime import datetime
 import asyncio
-from ..utiles.scrape import scraper
 import os
 
 data = []
