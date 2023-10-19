@@ -60,8 +60,6 @@ def export():
             item["linkedin_pers"],
         ])
 
-    print(scraper.get_history())
-
     # Save the workbook
     try:
         # Set the filename for the workbook
@@ -97,7 +95,7 @@ def index():
         job = data.get("job_title", None)
         if loc and ind and job:
             scraper.clear_result_data()
-            if scraper.start_scraping(loc, ind, job) == 200:
+            if scraper.start_scraping(loc, ind, job, 2) == 200:
                 data = scraper.get_result_data()
             else:
                 scraper.clear_result_data()
