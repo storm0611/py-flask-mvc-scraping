@@ -18,6 +18,6 @@ import os
 #             scraper.remove_all_chrome_process()
 
 if __name__ == '__main__':
-    scraper.create_driver(False, 2)
+    scraper.create_driver(True, 2)
     scraper.check_lang_location('https://www.google.com/maps')
     app.run(host="localhost", port=8000, debug=True, use_reloader=False)
