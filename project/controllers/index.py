@@ -1,14 +1,17 @@
+from io import BytesIO
 from project import app
 from flask import (
+    abort,
     render_template, 
     redirect, 
     url_for, 
     request,
-    jsonify
+    jsonify,
+    send_file,
 )
+from project.utiles.scrape import scraper
 import openpyxl
 from datetime import datetime
-import asyncio
 import os
 
 data = []
@@ -38,6 +41,8 @@ def export():
     worksheet['N1'] = 'Person Linkedin Url'
 
     for item in data:
+        if scraper.filter_text != '':
+            scraper.add_to_history(item["company"])
         worksheet.append([
             item["company"],
             item["website"],
@@ -55,62 +60,61 @@ def export():
             item["linkedin_pers"],
         ])
 
+    print(scraper.get_history())
+
     # Save the workbook
     try:
         # Set the filename for the workbook
-        filename = str(datetime.now().timestamp())+'.xlsx'
+        filename = str(int(datetime.now().timestamp()))+'.csv'
         # Set the directory to save the file in
         save_dir = os.path.join(app.root_path, 'csv')
         # Create the full path to the file
         filepath = os.path.join(save_dir, filename)
         # Save the workbook to the file
         workbook.save(filepath)
-        return jsonify({"status": "success"})
+        workbook.close()
+        with open(filepath, 'rb') as file:
+                file_data = file.read()
+                return send_file(BytesIO(file_data), as_attachment=True, mimetype='text/csv', download_name=filename)
+        # with zipfile.ZipFile(filepath + '.zip', 'w') as zip_file:
+        #     zip_file.write(filepath, os.path.basename(filepath))
+        #     zip_file.close()
+        #     with open(filepath + '.zip', 'rb') as file:
+        #         file_data = file.read()
+        #         return send_file(BytesIO(file_data), as_attachment=True, mimetype='zip', download_name=filepath + '.zip')
     except Exception as err:
-        return jsonify({"status": str(err)})
+        abort(500, str(err))
 
 #route index
 @app.route('/', methods = ['GET', 'POST'])
-async def index():
+def index():
+    global data
     data = []
     if request.method == "POST":
-        loc = request.POST.get("location", None)
-        ind = request.POST.get("industry", None)
-        job = request.POST.get("job-title", None)
+        loc = request.form.get("location", None)
+        ind = request.form.get("industry", None)
+        job = request.form.get("job-title", None)
         if loc and ind and job:
-            scraped = await asyncio.run(scraper(loc, ind, job))
-            for item in scraped:
-                data.append({
-                        "company": item["company"],
-                        "website": item["website"],
-                        "linkedin_comp": item["linkedin_comp"],
-                        "phone":  item["phone"],
-                        "address": item["address"],
-                        "state": item["state"],
-                        "city": item["city"],
-                        "code": item["code"],
-                        "country": item["country"],
-                        "fname": item["fname"],
-                        "lname": item["lname"],
-                        "title": item["title"],
-                        "email": item["email"],
-                        "linkedin_pers": item["linkedin_pers"],  
-                })
+            scraper.clear_result_data()
+            if scraper.start_scraping(loc, ind, job) == 200:
+                data = scraper.get_result_data()
+            else:
+                scraper.clear_result_data()
     
-    data.append({
-        "company": "3D CAM International",
-        "website": "3d-cam.com",
-        "linkedin_comp": "http://www.linkedin.com/company/3d-cam-international-corporation",
-        "phone": "818-773-8777",
-        "address": "9801 Variel Ave",
-        "state": "California",
-        "city": "Los Angeles",
-        "code": "91311-4317",
-        "country": "United States",
-        "fname": "Gary",
-        "lname": "Vassighi",
-        "title": "3d Prinitng, Plastic",
-        "email": "gary@3d-cam.com",
-        "linkedin_pers": "https://linkedin.com/in/gary-vassighi-931350b9",
-    })
+    # data.append({
+    #     "company": "3D CAM International",
+    #     "website": "3d-cam.com",
+    #     "linkedin_comp": "http://www.linkedin.com/company/3d-cam-international-corporation",
+    #     "phone": "818-773-8777",
+    #     "address": "9801 Variel Ave",
+    #     "state": "California",
+    #     "city": "Los Angeles",
+    #     "code": "91311-4317",
+    #     "country": "United States",
+    #     "fname": "Gary",
+    #     "lname": "Vassighi",
+    #     "title": "3d Prinitng, Plastic",
+    #     "email": "gary@3d-cam.com",
+    #     "linkedin_pers": "https://linkedin.com/in/gary-vassighi-931350b9",
+    # })
     return render_template('index.html', data=data)

@@ -18,12 +18,12 @@
       <div class="col-sm-4">
         <label for="location">Location:</label>
         <input type="text" class="form-control" id="location" name = "location"
-          placeholder="Please Enter Name of Country, Ex. United States" required>
+          placeholder="Country, Ex. United States" required>
       </div>
       <div class="col-sm-4">
         <label for="industry">Industry:</label>
         <input type="text" class="form-control" id="industry" name = "industry"
-          placeholder="Please Enter Name of Industry, Ex. Pharmaceutical manufacturing" required>
+          placeholder="Industry, Ex. Pharmaceutical manufacturing" required>
       </div>
       <div class="col-sm-4">
         <label for="job-title">Job Title Keyword:</label>
@@ -33,7 +33,7 @@
     </div>
     <div class="row mt-3">
       <div class="col-sm-12 d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary" id="search" disabled>Search</button>
+        <button type="submit" class="btn btn-primary" id="search">Search</button>
       </div>
     </div>
     </form>
@@ -44,7 +44,9 @@
     </div>
     <div class="row">
       <div class="col-sm-12 d-flex justify-content-end">
-        <button class="btn btn-outline-primary" id="export">Export</button>
+        <form action="/export" method="POST">
+        <button type="submit" class="btn btn-outline-primary" id="export">Export</button>
+        </form>
       </div>
     </div>
     <div class="row mt-1">
@@ -72,7 +74,7 @@
             {% for item in data %}
             <tr>
               <td>{{item["company"]}}</td>
-              <td>{{item["website"]}}</td>
+              <td><a href="https://{{item['website']}}">{{item["website"]}}<a></td>
               <td><a href="{{item['linkedin_comp']}}">{{item["linkedin_comp"]}}<a></td>
               <td>{{item["phone"]}}</td>
               <td>{{item["address"]}}</td>
@@ -107,21 +109,36 @@
 </body>
 <script>
   $(document).ready(function () {
-    $("#export").click(function () {
-        $.ajax({
-          url: "/export",
-          method: "POST",
-          data: {},
-          contentType: "application/json",
-          success: function (result, status, xhr) {
-            try {
-              console.log("Result: ", result);
-            } catch (err) {
-              console.log("Error: ", err);
-            }
-          }
-        });
-    });
+    // $("#export").click(function () {
+    //     $.ajax({
+    //       url: "/export",
+    //       method: "POST",
+    //       responseType: 'blob',
+    //       success: function(response) {
+    //         const blob = new Blob([response], { type: 'application/zip' });
+    //         const url = URL.createObjectURL(blob);
+    //         const link = document.createElement('a');
+    //         link.href = url;
+    //         link.download = new Date().toString()+'.zip';
+    //         link.click();
+    //         link.remove();
+    //         URL.revokeObjectURL(url);
+    //         // link.setAttribute('download', );
+    //         // document.body.appendChild(link);
+    //         // link.click();
+    //         // document.body.removeChild(link);
+    //       },
+    //       error: function(xhr, textStatus, errorThrown) {
+    //         if (xhr.status === 500) {
+    //             // Retrieve the error message from the responseText property
+    //             var errorMessage = xhr.responseText;
+    //             console.log(errorMessage);
+    //         } else {
+    //             console.log("An error occurred: " + errorThrown);
+    //         }
+    //       }
+    //     });
+    // });
     // $("#search").click(function () {
     //   $.ajax({
     //       url: "/",
