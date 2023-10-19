@@ -91,15 +91,17 @@ def index():
     global data
     data = []
     if request.method == "POST":
-        loc = request.form.get("location", None)
-        ind = request.form.get("industry", None)
-        job = request.form.get("job-title", None)
+        data = request.get_json()
+        loc = data.get("location", None)
+        ind = data.get("industry", None)
+        job = data.get("job_title", None)
         if loc and ind and job:
             scraper.clear_result_data()
-            if scraper.start_scraping(loc, ind, job) == 200:
+            if scraper.start_scraping(loc, ind, job, 1) == 200:
                 data = scraper.get_result_data()
             else:
                 scraper.clear_result_data()
+        # return jsonify({"data": data})
     
     # data.append({
     #     "company": "3D CAM International",
