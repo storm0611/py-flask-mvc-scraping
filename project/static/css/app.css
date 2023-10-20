@@ -11,6 +11,10 @@
   }
 
   .modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: #fff;
     margin: auto;
     padding: 20px;

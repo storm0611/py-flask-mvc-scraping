@@ -10,12 +10,32 @@ $(document).ready(function () {
                 "industry": $("#industry").val(),
                 "job_title": $("#job_title").val()
             }),
-            dataType: "html",
+            dataType: "json",
             contentType: 'application/json',
             success: function (result, status, xhr) {
                 $("#loading-modal").hide();
-                $("html").html("");
-                $("html").html(result);
+                html = "";
+                for (var i = 0; i < result.data.length; i++) {
+                    item = result.data[i];
+                    html += `
+                    <tr>
+                    <td>` + item["company"] + `</td>
+                    <td><a href="https://` + item['website'] + `">` + item["website"] + `<a></td>
+                    <td><a href="` + item['linkedin_comp'] + `">` + item["linkedin_comp"] + `<a></td>
+                    <td>` + item["phone"] + `</td>
+                    <td>` + item["address"] + `</td>
+                    <td>` + item["state"] + `</td>
+                    <td>` + item["city"] + `</td>
+                    <td>` + item["code"] + `</td>
+                    <td>` + item["country"] + `</td>
+                    <td>` + item["fname"] + `</td>
+                    <td>` + item["lname"] + `</td>
+                    <td>` + item["title"] + `</td>
+                    <td>` + item["email"] + `</td>
+                    <td><a href="` + item['linkedin_pers'] + `">` + item["linkedin_pers"] + `</td>
+                  </tr>`
+                }
+                $("#tbody-data").html(html);
                 console.log(status, result);
             },
             error: function (xhr, status, error) {

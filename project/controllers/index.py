@@ -99,7 +99,7 @@ def index():
                 data = scraper.get_result_data()
             else:
                 scraper.clear_result_data()
-        # return jsonify({"data": data})
+        return jsonify({"data": data})
     
     # data.append({
     #     "company": "3D CAM International",
