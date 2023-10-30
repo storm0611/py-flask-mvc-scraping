@@ -66,6 +66,8 @@ def export():
         filename = str(int(datetime.now().timestamp()))+'.csv'
         # Set the directory to save the file in
         save_dir = os.path.join(app.root_path, 'csv')
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
         # Create the full path to the file
         filepath = os.path.join(save_dir, filename)
         # Save the workbook to the file
@@ -85,9 +87,8 @@ def export():
 
 #route index
 @app.route('/', methods = ['GET', 'POST'])
-def index():
+async def index():
     global data
-    data = []
     if request.method == "POST":
         data = request.get_json()
         loc = data.get("location", None)
@@ -95,7 +96,7 @@ def index():
         job = data.get("job_title", None)
         if loc and ind and job:
             scraper.clear_result_data()
-            if scraper.start_scraping(loc, ind, job, 2) == 200:
+            if scraper.start_scraping(loc, ind, job) == 200:
                 data = scraper.get_result_data()
             else:
                 scraper.clear_result_data()

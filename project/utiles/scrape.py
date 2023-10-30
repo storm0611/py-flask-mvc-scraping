@@ -1,3 +1,4 @@
+import time
 import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -30,10 +31,11 @@ class Scraper:
         self.filter_text = ''
         self.element_wait_timeout = wait
     
-    def create_driver(self, headless = True, profile_num = 0):
+    def create_driver(self, headless = False, profile_num = 0):
         if self.driver is not None:
             self.del_driver()
         options = webdriver.ChromeOptions()
+        options.headless = headless
         if headless:
             options.add_argument('--headless')
         if profile_num:
@@ -74,6 +76,7 @@ class Scraper:
         if self.driver is None:
             print("Driver is not created")
             return 500 # Driver is not created
+        self.driver.switch_to.window(self.driver.window_handles[0])
         self.driver.get('https://www.google.com/maps')
         action = ActionChains(self.driver)
         try:
@@ -100,7 +103,7 @@ class Scraper:
             return 404 # Result not found
         start_t = datetime.now().second
         link_elems = []
-        while datetime.now().second - start_t < 10:
+        while datetime.now().second - start_t < 60:
             self.driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", result_elem)
             link_elems = WebDriverWait(self.driver, self.element_wait_timeout) \
                     .until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, f'div[aria-label^="{self.dictionary[self.language]["result"]}"] > div > div > a')))
@@ -203,9 +206,10 @@ class Scraper:
                     .until(EC.presence_of_element_located((By.CSS_SELECTOR, 'input[data-test-id="search-input-field"]')))
             except:
                 print("Maybe Not Logged in Lusha")
-                return 201 
-            search_elem.clear()
+                break
+                # return 201 
             action.move_to_element(search_elem).click().perform()
+            search_elem.clear()
             search_elem.send_keys(f"{data['website']}")
             # action.send_keys(Keys.ENTER).perform()
             try:
@@ -250,8 +254,9 @@ class Scraper:
                     .until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[class*="StyledDomainAndLinkedin-company-page"] div[class*="StyledLinkedinIcon-company-page"]')))
                 linkedin_elem.click()
                 self.driver.switch_to.window(self.driver.window_handles[-1])
-                self.result_data[i]["linkedin_comp"] = self.driver.current_url
-                self.driver.close()
+                if 'linkedin.com' in self.driver.current_url:
+                    self.result_data[i]["linkedin_comp"] = self.driver.current_url
+                    self.driver.close() 
                 self.driver.switch_to.window(self.driver.window_handles[0])
             except:
                 print("Company Linkedin Link not found")
@@ -260,11 +265,14 @@ class Scraper:
                     .until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-test-id="decision-makers"] div[data-test-id*="contact-0"] > div div[class*="StyledContactInfoLinkedinLink"]')))
                 linkedin_elem.click()
                 self.driver.switch_to.window(self.driver.window_handles[-1])
-                self.result_data[i]["linkedin_pers"] = self.driver.current_url
-                self.driver.close()
+                if 'linkedin.com' in self.driver.current_url:
+                    self.result_data[i]["linkedin_pers"] = self.driver.current_url
+                    self.driver.close()
                 self.driver.switch_to.window(self.driver.window_handles[0])
             except:
                 print("Director Linkedin Link not found")
+        
+        self.driver.switch_to.window(self.driver.window_handles[-1])
         return 200
 
     def add_to_history(self, company_name):
