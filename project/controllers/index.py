@@ -10,6 +10,9 @@ from flask import (
     send_file,
 )
 from project.utiles.scrape import scraper
+from project.config import (
+    LIMIT
+)
 import openpyxl
 from datetime import datetime
 import os
@@ -96,7 +99,7 @@ async def index():
         job = data.get("job_title", None)
         if loc and ind and job:
             scraper.clear_result_data()
-            if scraper.start_scraping(loc, ind, job) == 200:
+            if scraper.start_scraping(loc, ind, job, LIMIT) == 200:
                 data = scraper.get_result_data()
             else:
                 scraper.clear_result_data()

@@ -7,9 +7,7 @@ __email__ = "devstar0611@gmail.com"
 from project import app
 from project.utiles.scrape import scraper
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from project.config import PROFILE_NUM
 
 # @app.teardown_appcontext
 # def cleanup(error):
@@ -21,6 +19,6 @@ load_dotenv()
 #             scraper.remove_all_chrome_process()
 
 if __name__ == '__main__':
-    scraper.create_driver(False, int(os.environ.get('PROFILE_NUM', 2)))
+    scraper.create_driver(False, PROFILE_NUM)
     scraper.check_lang_location('https://www.google.com/maps')
     app.run(host="localhost", port=8000, debug=True, use_reloader=False)
