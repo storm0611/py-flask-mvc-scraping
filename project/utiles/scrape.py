@@ -280,6 +280,11 @@ class Scraper:
             self.history_data[self.filter_text] = []
         self.history_data[self.filter_text].append(company_name)
 
+    def open_new_window(self, url=""):
+        if self.driver:
+            self.driver.execute_script("window.open('{0}');", url)
+            self.driver.switch_to.window(self.driver.window_handles[-1])
+
     def get_result_data(self):
         return self.result_data
     

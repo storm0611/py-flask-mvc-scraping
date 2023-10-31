@@ -8,6 +8,7 @@ from project import app
 from project.utiles.scrape import scraper
 import os
 from project.config.scraper import PROFILE_NUM
+from threading import Timer
 
 # @app.teardown_appcontext
 # def cleanup(error):
@@ -17,6 +18,7 @@ from project.config.scraper import PROFILE_NUM
 #     if not scraper.is_driver_quitted():
 #         if not scraper.quit_driver_process():
 #             scraper.remove_all_chrome_process()
+
 
 if __name__ == '__main__':
     scraper.create_driver(False, PROFILE_NUM)

@@ -35,3 +35,5 @@ If it is omitted, there is no limitation in the number of results that will be e
 ```cli
 python server.py
 ```
+If the server is running successfully, you will be able to see the opened browser.
+After that, you can open another new tab, and access <http://localhost:8000> to start scraping.
