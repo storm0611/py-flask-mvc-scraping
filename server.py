@@ -7,7 +7,7 @@ __email__ = "devstar0611@gmail.com"
 from project import app
 from project.utiles.scrape import scraper
 import os
-from project.config import PROFILE_NUM
+from project.config.scraper import PROFILE_NUM
 
 # @app.teardown_appcontext
 # def cleanup(error):

@@ -10,9 +10,7 @@ from flask import (
     send_file,
 )
 from project.utiles.scrape import scraper
-from project.config import (
-    LIMIT
-)
+from project.config.scraper import LIMIT
 import openpyxl
 from datetime import datetime
 import os
