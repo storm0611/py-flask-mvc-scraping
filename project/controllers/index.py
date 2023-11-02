@@ -64,7 +64,7 @@ def export():
     # Save the workbook
     try:
         # Set the filename for the workbook
-        filename = str(int(datetime.now().timestamp()))+'.csv'
+        filename = str(int(datetime.now().timestamp()))+'.xlsx'
         # Set the directory to save the file in
         save_dir = os.path.join(app.root_path, 'csv')
         if not os.path.exists(save_dir):
@@ -76,7 +76,7 @@ def export():
         workbook.close()
         with open(filepath, 'rb') as file:
                 file_data = file.read()
-                return send_file(BytesIO(file_data), as_attachment=True, mimetype='text/csv', download_name=filename)
+                return send_file(BytesIO(file_data), as_attachment=True, mimetype='text/xlsx', download_name=filename)
         # with zipfile.ZipFile(filepath + '.zip', 'w') as zip_file:
         #     zip_file.write(filepath, os.path.basename(filepath))
         #     zip_file.close()
