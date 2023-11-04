@@ -272,7 +272,11 @@ class Scraper:
             except:
                 print("Director Linkedin Link not found")
         
-        self.driver.switch_to.window(self.driver.window_handles[-1])
+        # self.driver.switch_to.window(self.driver.window_handles[-1])
+        for i in range(len(self.driver.window_handles)):
+            self.driver.switch_to.window(self.driver.window_handles[i])
+            if 'localhost' in self.driver.current_url:
+                break
         return 200
 
     def add_to_history(self, company_name):

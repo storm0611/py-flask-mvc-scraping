@@ -37,3 +37,6 @@ python server.py
 ```
 If the server is running successfully, you will be able to see the opened browser.
 After that, you can open another new tab, and access <http://localhost:8000> to start scraping.
+
+## User Guide
+Check the guide.docx file in this directory: /user_guide/guide.docx
