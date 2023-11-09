@@ -12,6 +12,7 @@ from flask import (
 from project.utiles.scrape import scraper
 from project.config.scraper import LIMIT
 import openpyxl
+from openpyxl.worksheet.hyperlink import Hyperlink
 from datetime import datetime
 import os
 
@@ -47,7 +48,7 @@ def export():
         worksheet.append([
             item["company"],
             item["website"],
-            item["linkedin_comp"],
+            Hyperlink(ref=item["linkedin_comp"], target=item["linkedin_comp"]),
             item["phone"],
             item["address"],
             item["state"],
@@ -58,7 +59,7 @@ def export():
             item["lname"],
             item["title"],
             item["email"],
-            item["linkedin_pers"],
+            Hyperlink(ref=item["linkedin_pers"], target=item["linkedin_pers"]),
         ])
 
     # Save the workbook

@@ -44,8 +44,8 @@ class Scraper:
             else:
                 user_data_dir = os.path.join(os.path.expanduser('~'), '.config', 'google-chrome')
             options.add_argument(f'--user-data-dir={user_data_dir}')
-            if not os.path.exists(os.path.join(user_data_dir, "Profile ", str(profile_num))):
-                options.add_argument(f'--profile=Profile {str(profile_num)})')    
+            if os.path.exists(os.path.join(user_data_dir, f"Profile {profile_num}")):
+                options.add_argument(f'--profile=Profile {profile_num})')    
             else:
                 options.add_argument(f'--profile=Default')
         self.driver = uc.Chrome(use_subprocess=False, options=options)
