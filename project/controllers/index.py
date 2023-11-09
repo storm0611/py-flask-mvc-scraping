@@ -47,7 +47,7 @@ def export():
             scraper.add_to_history(item["company"])
         worksheet.append([
             item["company"],
-            item["website"],
+            Hyperlink(ref=item["website"], target=item["website"]),
             Hyperlink(ref=item["linkedin_comp"], target=item["linkedin_comp"]),
             item["phone"],
             item["address"],
