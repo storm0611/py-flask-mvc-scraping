@@ -1,4 +1,5 @@
 from io import BytesIO
+from sqlite3 import Row
 from project import app
 from flask import (
     abort,
@@ -42,25 +43,24 @@ def export():
     worksheet['M1'] = 'Email'
     worksheet['N1'] = 'Person Linkedin Url'
 
-    for item in data:
+    for i in range(len(data)):
+        item = data[i]
         if scraper.filter_text != '':
             scraper.add_to_history(item["company"])
-        worksheet.append([
-            item["company"],
-            Hyperlink(ref=item["website"], target=item["website"]),
-            Hyperlink(ref=item["linkedin_comp"], target=item["linkedin_comp"]),
-            item["phone"],
-            item["address"],
-            item["state"],
-            item["city"],
-            item["code"],
-            item["country"],
-            item["fname"],
-            item["lname"],
-            item["title"],
-            item["email"],
-            Hyperlink(ref=item["linkedin_pers"], target=item["linkedin_pers"]),
-        ])
+        worksheet.cell(row=i + 2, column=1).value = item["company"]
+        worksheet.cell(row=i + 2, column=2).value = '=HYPERLINK("{}")'.format(item["website"])
+        worksheet.cell(row=i + 2, column=3).value = '=HYPERLINK("{}")'.format(item["linkedin_comp"])
+        worksheet.cell(row=i + 2, column=4).value = item["phone"]
+        worksheet.cell(row=i + 2, column=5).value = item["address"]
+        worksheet.cell(row=i + 2, column=6).value = item["state"]
+        worksheet.cell(row=i + 2, column=7).value = item["city"]
+        worksheet.cell(row=i + 2, column=8).value = item["code"]
+        worksheet.cell(row=i + 2, column=9).value = item["country"]
+        worksheet.cell(row=i + 2, column=10).value = item["fname"]
+        worksheet.cell(row=i + 2, column=11).value = item["lname"]
+        worksheet.cell(row=i + 2, column=12).value = item["title"]
+        worksheet.cell(row=i + 2, column=13).value = item["email"]
+        worksheet.cell(row=i + 2, column=14).value = '=HYPERLINK("{}")'.format(item["linkedin_pers"])
 
     # Save the workbook
     try:
